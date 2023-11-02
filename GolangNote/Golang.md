@@ -19,36 +19,38 @@
           return a + b
       }
       ```
-	  
-	- 函数签名（Function Signature）:
-	
-	  - 函数签名定义了函数的名称、参数列表和返回值。
-	  - 它描述了函数的接口，即它接收什么参数，返回什么结果。
-	  - 例如，func Add(a int, b int) int的函数签名是Add(a int, b int) int，表示这是一个名为Add的函数，接收两个int类型的参数，并返回一个int类型的结果。
-	
-	- **方法（Method）**:
-	
-	  - 方法是与特定类型（如结构体或接口）相关联的函数。
-	
-	  - 在Go语言中，方法是定义在类型上的，并且可以访问该类型的数据。
-	
-	  - **方法的定义包含一个"接收者"（receiver），它指定了该方法属于哪个类型。**
-	
-	    ```go
-	    type Person struct {
-	        Name string
-	        Age  int
-	    }
-	    
-	    func (p Person) SayHello() {
-	        fmt.Println("Hello, my name is", p.Name)
-	    }
-	    //在上面的例子中，SayHello()是Person类型的一个方法。
-	    ```
-	
-	    
-	
-	    
+    
+  - 函数签名（Function Signature）:
+
+    - 函数签名定义了函数的名称、参数列表和返回值。
+    - 它描述了函数的接口，即它接收什么参数，返回什么结果。
+    - 例如，func Add(a int, b int) int的函数签名是Add(a int, b int) int，表示这是一个名为Add的函数，接收两个int类型的参数，并返回一个int类型的结果。
+
+  - **方法（Method）**:
+
+    - 方法是与特定类型（如结构体或接口）相关联的函数。
+
+    - 在Go语言中，方法是定义在类型上的，并且可以访问该类型的数据。
+
+    - **方法的定义包含一个"接收者"（receiver），它指定了该方法属于哪个类型。**
+
+      ```go
+      type Person struct {
+          Name string
+          Age  int
+      }
+      
+      func (p Person) SayHello() {
+          fmt.Println("Hello, my name is", p.Name)
+      }
+      //在上面的例子中，SayHello()是Person类型的一个方法。
+      ```
+
+- 包
+
+  - **首字母大写可导出访问，适用于全局变量、全局常量、函数、类型、字段和方法等。**
+
+  
 
 ## 一、基础概念
 
@@ -140,9 +142,36 @@
 
 #### 2.2 引用类型
 
+- 引用类型具有更复杂的内部结构
 
+  - `new`：类型大小分配零值内存，返回指针。**只关心类型长度，不涉及内部结构和逻辑。优先在栈上分配。**
 
-#### 3、if语句
+    - ```go
+      func main(){
+          s := *new([]int) //	slice:{ptr, len, cap}
+          m := *new(map[string]int) //	map: ptr
+          c := *new(chan int) //	chan: ptr
+          
+          p = new(int)
+          *p = 100
+      }
+      ```
+
+    - 
+
+  - `make`：转为类型构造函数，完成内部初始。
+
+    - ```go
+      s := make([]int, 10, 100) //分配底层数组，并初始化len和cap字段
+      s[0] = 1
+      
+      m := make(map[string]int, 10)
+      m["a"] = 1
+      ```
+
+    - 
+
+### 3、if语句
 - `if`后面的条件判断句不需要括号括起来
 - `{`必须放在行尾，和`if`或者`if else`放在一起
 - `if`后面可以带一个简单的初始化语句，并且以分号分割，该简单语句声明的变量的作用域是整个`if`语句块，包括后面的`else if`和`else`分支
@@ -155,7 +184,7 @@ if x := f(); x < y{
   return y
 }
 ```
-#### 4、switch语句
+### 4、switch语句
 
 - ***
 
@@ -169,53 +198,62 @@ case "n", "N"
 }
 ```
 
-#### 5、for循环
+### 5、for循环
 
 - 1、类似 C 里面的for循环语句
-		for init; condition; post{}
+		`for init; condition; post{}`
 - 2、类似 C 里面的 while 循环语句
-		for condition{}
+		`for condition{}`
 - 3、类似 C 里面的 while(1) 死循环语句
-		for {}
+		`for {}`
 - 4、对数组、切片、字符串、map和通道的访问，语法格式如下
 	
-		//访问map
-		for key, balue := range map{}
-		for key := range map{}
-		//访问数组
-		for index, value := range array{}
-		for index := range array{}
-		for _, value := range array{}
-		//访问切片
-		for index, value := range slice{}
-		for index := range slice{}
-		for _, value := range slice{}
-		//访问通道
-		for value := krange channel{}
+	```go
+	//访问map
+	for key, value := range map{}
+	for key := range map{}
+	//访问数组
+	for index, value := range array{}
+	for index := range array{}
+	for _, value := range array{}
+	//访问切片
+	for index, value := range slice{}
+	for index := range slice{}
+	for _, value := range slice{}
+	//访问通道
+	for value := range channel{}
+	```
 
-#### 6、标签和跳转
-- 标签：使用标签来标识一个语句的位置，用于goto 、break、continue语句的跳转。
+### 6、标签和跳转
+- 标签：使用标签来标识一个语句的位置，用于`goto、break、continue`语句的跳转。
 	
 		Lable: Statement
 	
-- goto语句有以下几个特点：
-	- goto语句只能在函数内跳转
-	- goto语句不能跳过内部变量的声明语句，例如
-			goto L //BAD，跳过v := 3 不被允许
+- `goto`语句有以下几个特点：
+	
+	- `goto`语句只能在函数内跳转
+	
+	- **`goto`语句不能跳过内部变量的声明语句，例如**
+		
+	- ```go
+		goto L //BAD，跳过v := 3 不被允许
 			v := 3
 			L:
-	- goto语句只能挑到同级作用域或者上层作用域内，不能跳到内部作用域内，例如：
+		```
+		
+	- `goto`语句只能挑到同级作用域或者上层作用域内，不能跳到内部作用域内，例如：
+		
 		```go
-		if n % 2 == 1{
-			goto L1
-		}
+  	if n % 2 == 1{
+  		goto L1
+  	}
 		for n > 2{
 			f()
-			n--
+	  	n--
 	  L1:
-      f()
-      n--
-  	}
+	    f()
+		  n--
+		}
 		```
 	
 - break：用于跳出for、switch、select等语句的执行
@@ -238,6 +276,36 @@ case "n", "N"
 		```
 
 - continue:
+
+### 7、数据结构
+
+#### 7.1 切片
+
+- 切片构造方法
+
+  - ```go
+    func main(){
+        array := [...]int{0,1,2,3,4,5,6,7,8}
+        slice1 := array[2:6:8]
+        
+        slice2 := []int{1,2,3,4,5,6}
+        
+        slice3 := make([]int, 5)
+        slice4 := make([]int, 0, 5)
+    }
+    ```
+
+  - 可获取元素指针，但是不能以切片指针访问元素。
+
+#### 7.2 字典
+
+- 特性
+  - 引用类型，无序键值对集合
+  - 以初始化表达式或者是make函数创建
+  - 可以判断字典是否为`nil`，不支持比较操作
+  - 访问不存在主键，返回零值，推荐使用`x, ok := m["a"]`进行访问。
+  - **迭代以随机次序返回**
+  - **值不可寻址，需整体赋值**
 
 ## 二、函数
 #### 实参到形参的传递
@@ -546,7 +614,8 @@ case "n", "N"
 #### panic 和 recover
 - panic用来主动抛出错误，recover用来捕获panic抛出的错误。
 - 发生panic后，程序会从调用panic的函数位置或发生panic的地方立即返回，逐层向上执行函数的defer语句，并且逐层打印函数调用堆栈，直到被recover捕获或运行到最外层函数退出。
-- recover()用来捕获panic，阻止panic继续向上传递。recover()和defer一起使用，但是只有在defer后面的函数体内被直接调用才能捕获panic终止异常，否则返回nail
+- recover()用来捕获panic，阻止panic继续向上传递。recover()和defer一起使用，但是只有在defer后面的函数体内被直接调用才能捕获panic终止异常，否则返回nail.
+- `recover`只能在延迟调用内正确执行，直接注册为延迟调用或者被延迟函数间接调用都无法捕获`panic`。
 
 ```go
 //这个会捕获失败
@@ -563,7 +632,7 @@ defer func(){
 }()
 
 //捕获成功
-deder func(){
+defer func(){
   println("defer inner")
   recocer()
 }()
@@ -583,9 +652,7 @@ func test(){
 
 - init函数引发的panic只能在init函数中被捕获，原因是init先于main执行。函数不能捕获内部新启动的goroutine所跑出的panic；
 
-#### 错误处理
-
-- 
+### 错误处理
 
 - 错误和异常
 
@@ -601,13 +668,13 @@ func test(){
 
 ## 三、类型系统
 
-#### 命名类型和未命名类型
+### 1、命名类型和未命名类型
 
 - 命名类型：命名类型可以通过标识符来表示，包括自定义类型。
 
 - 未命名类型：一个类型由预声明类型、关键字和操作符组合。复合类型：数组、切片、字典、通道、指针、函数字面量、结构和接口。其中`*int`, `[]int`, `[2]int`, `map[k]v`
 
-  - 类型字面量：类型字面量不是使用预先定义的类型名称，而是直接在声明或者使用的地方定义了类型的结构。这通常用于创建匿名结构体、匿名接口、切片类型、映射（map）类型、通道（channel）类型等。
+  - **类型字面量：**类型字面量不是使用预先定义的类型名称，而是直接在声明或者使用的地方定义了类型的结构。这通常用于创建匿名结构体、匿名接口、切片类型、映射（map）类型、通道（channel）类型等。
 
   ```go
   package main
@@ -652,7 +719,22 @@ func test(){
   }
   ```
 
+  - 具有相同声明的未命名类型被视作同一类型。
+
+    ```go
+    func main(){
+        [2]int, [3]int //未命名类型：长度不同，不是同一类型。
+        []int, []byte //元素类型不同
+        
+        var a, b interface{
+            test()
+        }
+        println(a == b)
+    }
+    ```
+
 - 底层类型
+
   - (1) 预声明类型和类型字面量的底层类型是自身
   - (2) 自定义类型的底层类型是逐层递归向下查找的，直到查找的oldtype是预声明类型或者是类型字面量
 
@@ -666,7 +748,7 @@ func test(){
     - 通过类型别名语句声明的两个类型相同
     - **类型别名**: `type T1 = T2`
 
-  - 类型赋值
+  - **类型赋值**
 
     - 不同类型之间的变量之间一般不能直接相互赋值
 
@@ -674,13 +756,13 @@ func test(){
 
       - 1、T1 和 T2的类型相同
 
-      - 2、T1 和 T2 具有相同的底层类型，并且T1 和 T2中至少有一个是未命名类型
+      - 2、**T1 和 T2 具有相同的底层类型，并且T1 和 T2中至少有一个是未命名类型**
 
-      - 3、T2是接口类型，T1是具体类型，T1的方法集是T2方法集的超集
+      - 3、**T2是接口类型，T1是具体类型，T1的方法集是T2方法集的超集**
 
       - 4、T1 和 T2 都是通道类型，拥有相同的元素类型，并且T1 和 T2中至少有一个是未命名类型。
 
-      - 5、a是预声明标识符nail， T2是pointer、function、slice、map、channel、interface等类型
+      - 5、a是预声明标识符nail， T2是`pointer、function、slice、map、channel、interface等类型`
 
       - 6、a是一个字面常量值
 
@@ -756,18 +838,17 @@ func test(){
       ```
 
 
-#### 类型方法
-- 自定义类型
-		
-	
-		自定义类型使用关键字type，语法格式`type newtype oldtype`。`oldtype`可以是自定义类型、预声明类型、未命名类型中的任意一种，其中`newtype`与`oldttype`具有相同的底层类型，并且都继承了底层类型的操作。**自定义类型都是命名类型**
+### 2、类型方法
+#### 2.1 自定义类型
+
+	自定义类型使用关键字type，语法格式`type newtype oldtype`。`oldtype`可以是自定义类型、预声明类型、未命名类型中的任意一种，其中`newtype`与`oldttype`具有相同的底层类型，并且都继承了底层类型的操作。**自定义类型都是命名类型**。
 ```go
 type INT int
 type Map map[string]string
 type myMap Map //myMap是一个自定义类型Map声明的自定义类型
 ```
 
-- 自定义struct类型
+#### 2.2 自定义struct类型
 
   - struct初始化
 
@@ -778,7 +859,7 @@ type myMap Map //myMap是一个自定义类型Map声明的自定义类型
     }
     ```
 
-    - (1)按照字段顺序进行初始化
+    - (1) 按照字段顺序进行初始化
 
       ```go
       a := Person("andes", 18)
@@ -791,7 +872,8 @@ type myMap Map //myMap是一个自定义类型Map声明的自定义类型
         18
       }
       ```
-		- (2)指定字段名初始化,推荐该方法，因为struct增加字段，不用修改初始化语句
+    - (2) 指定字段名初始化，推荐该方法，因为struct增加字段，不用修改初始化语句
+
       ```go
       a := Person{name: "andes", age: 18}
       b := Person{
@@ -803,12 +885,13 @@ type myMap Map //myMap是一个自定义类型Map声明的自定义类型
         age: 18
       }
       ```
-    - (3)使用new创建内置函数，字段默认初始化其类型的零值，返回值是指向结构的指针。例如：
+
+    - (3) 使用new创建内置函数，字段默认初始化其类型的零值，返回值是指向结构的指针。例如：
     ```go
     p :=new{Person}
     ```
-    - (4)一次初始化一个字段
-    - (5)使用构造函数进行初始化
+    - (4) 一次初始化一个字段
+    - (5) 使用构造函数进行初始化
     ```go
     func New(text string) error{
       return &errorString{text}
@@ -816,20 +899,51 @@ type myMap Map //myMap是一个自定义类型Map声明的自定义类型
     type errorString struct{
       s string
     }
-    
+    ```
 
-- 结构字段的特点
+#### 2.3 匿名
+
+- 隐式以类型名为字段名
+
+- 嵌入类型与其指针类型隐式字段名相同
+
+- 可以像直属字段访问嵌入类型成员
+
+  - 存在重名情况：编译器优先直属命名字段，或按嵌入层次逐级查找匿名类型成员
+
+  - ```go
+    type File struct{
+        name []byte
+    }
+    type Data struct{
+        File
+        name string
+    }
+    
+    func main(){
+        d := Data{
+            name : "data"
+            File: File{[]byte("file")}
+        }
+        d.name = "data2" //优先直属命名字段
+        d.File.name = []byte("file")
+        
+    }
+    ```
+
+  - 
+
+
+#### 2.4 结构字段的特点
   - 可以是任意的类型，基本类型、接口类型、指针类型、函数类型等。结构字段的类型名必须唯一，结构体自身可以嵌套自身的指针，以实现数、链表等数据结构。
   - 匿名字段：定义struct的过程中，如果字段只给出字段类型，没有给出字段名，则称这样的字段为匿名字段。
-  
+
   ```go
   type File struct{
     *file
   }
   ```
-  
-  
-  
+
 - 自定义接口类型
 
   ```go
@@ -841,8 +955,9 @@ type myMap Map //myMap是一个自定义类型Map声明的自定义类型
   }
   ```
 
+### 3、方法
 
-- **方法**：go中类型方法是一种对类型行为的封装。Go语言的方法可以看作特殊类型的函数，其显式地将对象实例或指针作为函数的第一个参数，并且函数名可以指定。这个对象实例或者指针被称为`reciever`
+-  go中类型方法是一种对类型行为的封装。Go语言的方法可以看作特殊类型的函数，其显式地将对象实例或指针作为函数的第一个参数，并且函数名可以指定。这个对象实例或者指针被称为`reciever`
 
   - 示例：
 
@@ -904,11 +1019,21 @@ type myMap Map //myMap是一个自定义类型Map声明的自定义类型
           }
           ```
 
+- **如何确定接受参数类型**
+  - 修改实例状态，用`*T`；
+  - 不修改状态的小对象或固定值，用`T`；
+  - 大对象用`*T`，减少复制成本；
+  - 引用类型、字符串、函数等指针包装对象，用`T`；
+  - 含`Mutex`等同步字段，使用`*T`，避免因为复制而造成锁失效；
+  - 其他无法确定的使用`*T`。
+
 #### 方法调用
 
 - 一般调用： `TypeInstanceName.MethodName(paramList)	`
 
-- 方法值：带有闭包的函数变量，其底层实现原理和带有闭包的匿名函数类似。变量x的静态类型是T，m是类型T的一个方法，则`x.m`被称为方法值
+#### 方法值
+
+- 带有闭包的函数变量，其底层实现原理和带有闭包的匿名函数类似。变量x的静态类型是T，m是类型T的一个方法，则`x.m`被称为方法值
 
  ```go
   typen T struct{
@@ -935,7 +1060,9 @@ type myMap Map //myMap是一个自定义类型Map声明的自定义类型
   f(3)
  ```
 
-- 方法表达式：**将类型方法显式地转换为函数调用，接收者必须显式地传递进去。**
+#### 方法表达式
+
+**将类型方法显式地转换为函数调用，接收者必须显式地传递进去。**
 
 ```go
 type T struct{
@@ -952,12 +1079,12 @@ func (t *T) Print(){
 }
 ```
 
-- `T.Get和*T.Set`是方法表达式，方法表达式可以看作为函数名，只不过这个函数的首个参数是示例或者是指针。
+- `T.Get和*T.Set`是方法表达式，方法表达式可以看作为函数名，只不过这个函数的首个参数是示例或者是指针。**将方法还原为普通函数，显式传递接收参数。**
 
   - ```go
     t := T{a:1}
     //普通方法
-    t.Get(t)
+    t.Get()
     //方法表达式
     (T).Get(t)
     
@@ -1062,8 +1189,8 @@ func (t *T) Print(){
   - 接口字面量类型的声明
    ```go
     interface{
-    MethodSignature1
-    MethodSignature2
+    	MethodSignature1
+   	MethodSignature2
     }
    ```
 	- 接口命名类型
@@ -1122,7 +1249,7 @@ func (t *T) Print(){
 - 接口方法调用
 - 接口的动态特性和静态特性
   - 动态特性：接口绑定的具体实例的类型称为接口的动态类型。接口可以绑定不同类型的实例，所以接口的动态类型是随着其绑定的不同类型实例而发生的。
-  - 静态特性：接口被定义时， 其类型就已经被确定，这个类型叫接口的静态类型。接口的静态类型在其定义时就被确定，静态类型的本质特征就是接口的方法签名集合。**如果两个皆苦的方法签名集合相同（顺序可以不同），则这两个接口子啊语义上完全等价，它们之间不需要强制类型转换就可以相互赋值。
+  - 静态特性：接口被定义时， 其类型就已经被确定，这个类型叫接口的静态类型。接口的静态类型在其定义时就被确定，静态类型的本质特征就是接口的方法签名集合。**如果两个皆苦的方法签名集合相同（顺序可以不同），则这两个接口子啊语义上完全等价，它们之间不需要强制类型转换就可以相互赋值。**
 
 #### 接口运算
 - 类型断言 `i.(TypeName)`
@@ -2107,7 +2234,7 @@ func ProcessResult(resultchan chan int) int {
 - 基本数据结构：**树结构，第一个创建Context的协程被称为root节点。root节点负责创建实现Context接口的具体对象，再传递给下游的协程。**
   - Context是一个基本接口，所有的Context对象都要实现该接口，context的使用者在调用接口中都适用Context作为参数类型。
   - `context.Context` 在 Go 语言的并发编程中非常重要，主要用于控制协程（goroutines）的生命周期，特别是在处理取消信号、超时以及传递请求范围的值时。
-  
+
   ```go
   type Context interface{
   	//Context 实现了超时控制
@@ -2220,3 +2347,160 @@ func ProcessResult(resultchan chan int) int {
     - (1) 日志信息；
     - (2) 调试信息；
     - (3)不影响业务主逻辑的可选数据。
+
+## 六、反射
+
+
+### 基本概念
+​	**反射是用程序检查其所拥有的结构，尤其是类型的一种能力；这是元编程的一种形式。反射可以在运行时检查类型和变量，例如：它的大小、它的方法以及它能“动态地”调用这些方法。**
+
+- `reflect.Typeof()`用法
+
+```go
+package main
+
+import (
+	"fmt"
+	"reflect"
+)
+
+type Student struct {
+	Name string "student_name"
+	Age  int    `a:"student_age"`
+}
+
+func main() {
+	s := Student{}
+	//获取类型信息
+	rt := reflect.TypeOf(s)
+
+	//尝试通过字段名"Name"获取Student的字段信息。
+	fieldName, ok := rt.FieldByName("Name")
+	if ok {
+		fmt.Println(fieldName.Tag)
+	}
+
+	fieldAge, ok2 := rt.FieldByName("Age")
+	if ok2 {
+		fmt.Println(fieldAge.Tag.Get("a"))
+		//fmt.Println(fieldAge.Tag.Get("b"))
+	}
+	//打印Student类型的各种信息，包括类型名、字段数、包路径、类型的字符串表示，以及所有字段的名字。
+	fmt.Println("type_Name:", rt.Name())
+	fmt.Println("type_NumField:", rt.NumField())
+	fmt.Println("type_pkgPath:", rt.PkgPath())
+	fmt.Println("type_String:", rt.String())
+
+	for i := 0; i < rt.NumField(); i++ {
+		fmt.Printf("type_Field[%d].Name:=%v\n", i, rt.Field(i).Name)
+	}
+	sc := make([]int, 20)
+	sc = append(sc, 1, 2, 3)
+	//通过反射获取了切片元素的类型。然后打印出元素类型的种类
+	sct := reflect.TypeOf(sc)
+	//得到的是切片中元素的类型信息。
+	scet := sct.Elem()
+	//打印了切片元素类型的字符串表示、名称、方法数量、包路径等信息。
+	fmt.Println("slice element type.Kind()=", scet.Kind())
+	fmt.Printf("slice element type.Kind()= %d\n", scet.Kind())
+	fmt.Println("slice element type.String()=", scet.String())
+
+	fmt.Println("slice element type.Name()=", scet.Name())
+	fmt.Println("slice type.NumMethod()=", scet.NumMethod())
+	fmt.Println("slice type.PkgPath()=", scet.PkgPath())
+	fmt.Println("slice type.PkgPath()=", sct.PkgPath())
+
+	fmt.Println()
+
+}
+//student_name
+//student_age
+//type_Name: Student
+//type_NumField: 2
+//type_pkgPath: main
+//type_String: main.Student
+//type_Field[0].Name:=Name
+//type_Field[1].Name:=Age
+//slice element type.Kind()= int
+//slice element type.Kind()= 2
+//slice element type.String()= int
+//slice element type.Name()= int
+//slice type.NumMethod()= 0
+//slice type.PkgPath()=
+//slice type.PkgPath()=
+```
+
+- **对于`reflect.TypeOf()`**如果传进去的是一个接口变量，如果接口变量没有绑定具体类型实例，则返回的是接口自身的静态类型信息，；如果绑定具体类型实例，则返回的是具体类型实例的信息。
+- `refelct.Value`，表示实例的值的信息
+
+```go
+package main
+
+import (
+	"fmt"
+	"reflect"
+)
+
+type User struct {
+	Id   int
+	Name string
+	Age  int
+}
+
+func (this User) String() {
+	println("User:", this.Id, this.Name, this.Age)
+}
+func Info(o interface{}) {
+	//首先获取对象o的值和类型
+	v := reflect.ValueOf(o) //包含了关于 o 的信息和可以对 o 进行操作的方法。
+	t := v.Type()
+	//打印类型名
+	println("Fields")
+	//打印字段信息:
+	for i := 0; i < t.NumField(); i++ {
+		//获取字段的元数据（比如字段名和类型）
+		field := t.Field(i)
+		//获取字段的实际值
+		value := v.Field(i).Interface()
+		switch value := value.(type) {
+		case int:
+			//%6s 表示字段名以最小宽度6字符右对齐打印，%v 表示以默认格式打印字段类型，而 %d 或 %s 则根据值的类型打印整数或字符串。
+			fmt.Printf("%6s: %v = %d\n", field.Name, field.Type, value)
+		case string:
+			fmt.Printf("%6s: %v = %s\n", field.Name, field.Type, value)
+		default:
+			fmt.Printf("%6s: %v = %s\n", field.Name, field.Type, value)
+
+		}
+	}
+}
+
+func main() {
+	u := User{
+		Id:   1,
+		Name: "Tom",
+		Age:  30,
+	}
+	Info(u)
+}
+//Type:  User
+//Fields
+//Id: int = 1
+//Name: string = Tom
+//Age: int = 30
+
+```
+
+- 底层类型和基础类型
+
+  - 基础类型是抽象的类型划分，底层类型是针对每一个具体的类型来定义的，比如不同的struct在基础类型上都划归为struct类型，但不同的struct底层类型是不同的。
+
+- 类型汇总
+	
+		简单类型 复合类型 类型字面量 自定义类型
+		命名类型 未命名类型
+		接口类型 具体类型
+		底层类型 基础类型
+		动态类型 静态类型
+
+### 反射规则
